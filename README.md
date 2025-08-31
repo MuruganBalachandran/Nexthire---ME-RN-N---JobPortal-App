@@ -1,4 +1,4 @@
-# NextHire -Mobile App for Job seeker and Recruiters
+# NextHire -Mobile App
 
 A modern, full-stack Job Portal application for job seekers and recruiters, built with React Native (mobile client) and Node.js/Express (backend API).
 
