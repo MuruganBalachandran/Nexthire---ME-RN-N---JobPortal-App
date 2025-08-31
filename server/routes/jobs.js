@@ -189,7 +189,7 @@ const deleteJob = asyncHandler(async (req, res) => {
     });
   }
 
-  await job.remove();
+  await Job.findByIdAndDelete(req.params.id);
 
   res.json({
     success: true,

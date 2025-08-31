@@ -1,23 +1,32 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { COLORS } from '../../styles/colors';
 
-const MenuItem = ({ item, isLast }) => (
-  <TouchableOpacity style={[styles.menuItem, isLast && styles.lastMenuItem]} onPress={item.onPress}>
-    <View style={[styles.menuIconContainer, { backgroundColor: item.color + '15' }]}>
-      <Icon name={item.icon} size={22} color={item.color} />
-      {item.badge && <View style={styles.menuItemBadge} />}
-    </View>
-    <View style={styles.menuContent}>
-      <Text style={styles.menuTitle}>{item.title}</Text>
-      <Text style={styles.menuSubtitle}>{item.subtitle}</Text>
-    </View>
-    <View style={styles.chevronContainer}>
-      <Icon name="chevron-right" size={22} color={COLORS.gray400} />
-    </View>
-  </TouchableOpacity>
-);
+const MenuItem = ({ item, isLast }) => {
+  const handlePress = () => {
+    if (typeof item.onPress === 'function') {
+      item.onPress();
+    } else {
+      Alert.alert('Coming Soon', 'This feature will be available in a future update.');
+    }
+  };
+  return (
+    <TouchableOpacity style={[styles.menuItem, isLast && styles.lastMenuItem]} onPress={handlePress}>
+      <View style={[styles.menuIconContainer, { backgroundColor: item.color + '15' }]}>
+        <Icon name={item.icon} size={22} color={item.color} />
+        {item.badge && <View style={styles.menuItemBadge} />}
+      </View>
+      <View style={styles.menuContent}>
+        <Text style={styles.menuTitle}>{item.title}</Text>
+        <Text style={styles.menuSubtitle}>{item.subtitle}</Text>
+      </View>
+      <View style={styles.chevronContainer}>
+        <Icon name="chevron-right" size={22} color={COLORS.gray400} />
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 const MenuSection = ({ title, items, isLastSection }) => (
   <View style={[styles.menuSection, isLastSection && styles.lastMenuSection]}>

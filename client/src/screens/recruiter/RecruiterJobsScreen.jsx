@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { COLORS } from '../../styles/colors';
 import { FONTS } from '../../styles/fonts';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -68,13 +68,27 @@ const RecruiterJobsScreen = ({ navigation }) => {
     navigation.navigate('EditJob', { job });
   };
 
-  const handleDelete = async (jobId) => {
-    try {
-      await deleteJob(jobId);
-      setJobs(jobs.filter(j => j._id !== jobId));
-    } catch (err) {
-      setError(err.message);
-    }
+  const handleDelete = (jobId) => {
+    Alert.alert(
+      'Delete Job',
+      'Are you sure you want to delete this job?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await deleteJob(jobId);
+              setJobs(jobs.filter(j => j._id !== jobId));
+            } catch (err) {
+              setError(err.message);
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
   };
 
   const renderJob = ({ item }) => (
