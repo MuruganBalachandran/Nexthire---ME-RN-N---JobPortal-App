@@ -1,4 +1,4 @@
-# JobPortal-RN
+# NextHire -Mobile App
 
 A modern, full-stack Job Portal application for job seekers and recruiters, built with React Native (mobile client) and Node.js/Express (backend API).
 
@@ -114,9 +114,6 @@ npm install
 - See [`server/README.md`](server/README.md) for API endpoints, environment setup, and backend features.
 
 ---
-
-## 🤝 Contributing
-Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
 
 ## 📄 License
 [MIT](LICENSE)
