@@ -107,30 +107,6 @@ npm install
 
 ---
 
-## 📱 Output Images
-
-### Login & Signup
-![Login Screen](output/login.png)
-![Signup Screen](output/signup.png)
-
-### Home & Job Listings
-![Home Screen](output/home.png)
-![Job Listings](output/jobs.png)
-
-### Job Details & Application
-![Job Details](output/job-details.png)
-![Apply to Job](output/apply.png)
-
-### Recruiter Dashboard
-![Recruiter Dashboard](output/recruiter-dashboard.png)
-
-### Notifications
-![Notifications](output/notifications.png)
-
-> _Place your screenshots in an `output/` folder at the root of your repo for them to appear above._
-
----
-
 ## 📱 Mobile App (client)
 - See [`client/README.md`](client/README.md) for detailed setup, features, and troubleshooting for the React Native app.
 
