@@ -1,78 +1,79 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import LinearGradient from 'react-native-linear-gradient';
 import { COLORS } from '../../../styles/colors';
 import { FONTS } from '../../../styles/fonts';
-import { JOB_TYPES } from '../../../utils/constants';
 
-const JobListHeader = ({ 
-  title, 
-  subtitle, 
-  filterType, 
-  onFilterChange, 
-  totalJobs,
+const FILTERS = [
+  { label: 'All', value: 'all' },
+  { label: 'Full Time', value: 'full-time' },
+  { label: 'Part Time', value: 'part-time' },
+  { label: 'Remote', value: 'remote' },
+  { label: 'Contract', value: 'contract' },
+  { label: 'Internship', value: 'internship' },
+  { label: 'Freelance', value: 'freelance' },
+];
+
+const JobListHeader = ({
+  title = 'Jobs',
+  subtitle = 'Find your next opportunity',
   showBackButton,
-  onBackPress
+  onBackPress,
+  searchQuery = '',
+  setSearchQuery = () => {},
+  filterType = 'all',
+  onFilterChange = () => {},
 }) => {
   return (
     <View style={styles.header}>
-      <View style={styles.headerTop}>
+      <View style={styles.headerRow}>
         {showBackButton && (
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={onBackPress}
-          >
+          <TouchableOpacity style={styles.backButton} onPress={onBackPress}>
             <Icon name="arrow-back" size={24} color={COLORS.white} />
           </TouchableOpacity>
         )}
-        <View style={styles.headerTitleContainer}>
+        <View style={styles.textContainer}>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.subtitle}>{subtitle}</Text>
         </View>
       </View>
-      
-      <View style={styles.statsContainer}>
-        <View style={styles.statItem}>
-          <Text style={styles.statNumber}>{totalJobs}</Text>
-          <Text style={styles.statLabel}>Total Jobs</Text>
+      <View style={styles.searchBarContainer}>
+        <View style={styles.searchBarWrapper}>
+          <Icon name="search" size={22} color="#e0e0e0" style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchBar}
+            placeholder="Search jobs, companies, locations..."
+            placeholderTextColor="#e0e0e0"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            returnKeyType="search"
+            underlineColorAndroid="transparent"
+            autoCorrect={false}
+            autoCapitalize="none"
+          />
         </View>
       </View>
-
-      <ScrollView 
-        horizontal 
+      <ScrollView
+        horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.filterContainer}
       >
-        <TouchableOpacity
-          style={[
-            styles.filterChip,
-            filterType === 'all' && styles.filterChipActive
-          ]}
-          onPress={() => onFilterChange('all')}
-        >
-          <Text style={[
-            styles.filterText,
-            filterType === 'all' && styles.filterTextActive
-          ]}>
-            All Jobs
-          </Text>
-        </TouchableOpacity>
-        
-        {JOB_TYPES.map((type) => (
+        {FILTERS.map((filter) => (
           <TouchableOpacity
-            key={type.value}
+            key={filter.value}
             style={[
               styles.filterChip,
-              filterType === type.value && styles.filterChipActive
+              filterType === filter.value && styles.filterChipActive,
             ]}
-            onPress={() => onFilterChange(type.value)}
+            onPress={() => onFilterChange(filter.value)}
           >
-            <Text style={[
-              styles.filterText,
-              filterType === type.value && styles.filterTextActive
-            ]}>
-              {type.label}
+            <Text
+              style={[
+                styles.filterText,
+                filterType === filter.value && styles.filterTextActive,
+              ]}
+            >
+              {filter.label}
             </Text>
           </TouchableOpacity>
         ))}
@@ -83,17 +84,16 @@ const JobListHeader = ({
 
 const styles = StyleSheet.create({
   header: {
-    paddingTop: 32,
-    paddingBottom: 16,
     backgroundColor: COLORS.primary,
+    padding: 20,
+    paddingTop: 40,
     borderBottomLeftRadius: 24,
     borderBottomRightRadius: 24,
   },
-  headerTop: {
+  headerRow: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    paddingHorizontal: 24,
-    marginBottom: 16,
+    alignItems: 'center',
+    marginBottom: 8,
   },
   backButton: {
     width: 40,
@@ -104,53 +104,71 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginRight: 16,
   },
-  headerTitleContainer: {
+  textContainer: {
     flex: 1,
+    justifyContent: 'center',
   },
   title: {
     fontSize: 24,
     fontFamily: FONTS.bold,
     color: COLORS.white,
-    marginBottom: 8,
+    marginBottom: 4,
   },
   subtitle: {
     fontSize: 16,
     fontFamily: FONTS.regular,
     color: COLORS.white,
     opacity: 0.9,
-    marginBottom: 20,
+    marginBottom: 8,
   },
-  statsContainer: {
-    flexDirection: 'row',
-    marginBottom: 20,
+  searchBarContainer: {
+    marginBottom: 10,
+    marginTop: 2,
+    paddingHorizontal: 2,
   },
-  statItem: {
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 12,
-  },
-  statNumber: {
-    fontSize: 18,
-    fontFamily: FONTS.bold,
-    color: COLORS.white,
-  },
-  statLabel: {
-    fontSize: 12,
-    fontFamily: FONTS.regular,
-    color: COLORS.white,
-    opacity: 0.9,
-  },
+  searchBarWrapper: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  backgroundColor: 'rgba(255,255,255,0.10)', // lighter, more subtle
+  borderRadius: 24,
+  paddingHorizontal: 14,
+  paddingVertical: 6,
+  borderWidth: 1,
+  borderColor: 'rgba(255,255,255,0.18)',
+  // Remove heavy shadow for a flatter, modern look
+  shadowColor: 'transparent',
+  elevation: 0,
+},
+searchIcon: {
+  marginRight: 8,
+  color: '#d1d5db', // lighter icon
+},
+searchBar: {
+  flex: 1,
+  backgroundColor: 'transparent',
+  color: COLORS.white,
+  fontSize: 16,
+  fontFamily: FONTS.regular,
+  paddingVertical: 0,
+  paddingHorizontal: 0,
+  minHeight: 36,
+},
   filterContainer: {
     flexDirection: 'row',
-    paddingRight: 16,
+    alignItems: 'center',
+    paddingVertical: 2,
+    paddingLeft: 2,
+    paddingRight: 2,
   },
   filterChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 18,
     backgroundColor: 'rgba(255,255,255,0.15)',
     marginRight: 8,
+    marginBottom: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   filterChipActive: {
     backgroundColor: COLORS.white,
@@ -162,6 +180,7 @@ const styles = StyleSheet.create({
   },
   filterTextActive: {
     color: COLORS.primary,
+    fontWeight: 'bold',
   },
 });
 

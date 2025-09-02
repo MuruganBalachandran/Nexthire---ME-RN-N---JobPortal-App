@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { COLORS } from '../../../styles/colors';
 import { FONTS } from '../../../styles/fonts';
 
-const CoverLetterSection = ({ value, onChangeText }) => {
+const CoverLetterSection = ({ value, onChangeText, onAISuggestion, job }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [showTips, setShowTips] = useState(false);
   const animatedValue = new Animated.Value(0);
@@ -143,14 +143,16 @@ const CoverLetterSection = ({ value, onChangeText }) => {
 
       {/* Quick Actions */}
       <View style={styles.quickActions}>
-        <TouchableOpacity style={styles.actionButton} activeOpacity={0.7}>
+        <TouchableOpacity
+          style={styles.actionButton}
+          activeOpacity={0.7}
+          onPress={() => {
+            const template = `I am excited to apply for the ${job?.title || '[Job Title]'} position at ${job?.company || '[Company Name]'}.\nWith my background in [Your Key Skill/Experience], I bring strong expertise in [specific relevant skill or achievement].\nI am particularly drawn to this role because [reason you admire the company, its values, or the role].\nI would welcome the opportunity to contribute my skills to your team and help drive ${job?.company ? job.company + "'s" : "[Company’s]"} Goal/Project/Initiative.`;
+            onChangeText(template);
+          }}
+        >
           <Icon name="auto-fix-high" size={16} color={COLORS.primary} />
           <Text style={styles.actionText}>AI Suggestions</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.actionButton} activeOpacity={0.7}>
-          <Icon name="template" size={16} color={COLORS.secondary} />
-          <Text style={styles.actionText}>Templates</Text>
         </TouchableOpacity>
       </View>
     </View>

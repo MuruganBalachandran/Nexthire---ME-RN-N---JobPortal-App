@@ -29,6 +29,7 @@ const HomeScreen = ({ navigation }) => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [recentApplications, setRecentApplications] = useState([]);
   const [recruiterStats, setRecruiterStats] = useState({ activeJobs: 0, candidates: 0, successRate: 0 });
+  const [jobseekerStats, setJobseekerStats] = useState({ availableJobs: 0, applications: 0, matchRate: 0 });
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [scrollY] = useState(new Animated.Value(0));
@@ -66,46 +67,39 @@ const HomeScreen = ({ navigation }) => {
   const loadData = async () => {
     setLoading(true);
     try {
-      console.log('Current user:', latestUser); 
-      
+      console.log('Current user:', latestUser);
       const jobs = await getJobs();
-      console.log('Jobs response:', jobs);
       if (latestUser?.userType === 'jobseeker') {
         setRecentJobs(jobs.slice(0, 5));
+        // Real stats for jobseeker
+        const availableJobs = Array.isArray(jobs) ? jobs.length : 0;
+        let applications = 0;
+        try {
+          const userApplications = await require('../services/api').getUserApplications(latestUser._id);
+          if (userApplications && userApplications.data) {
+            applications = Array.isArray(userApplications.data) ? userApplications.data.length : 0;
+          }
+        } catch (err) {
+          console.error('Failed to fetch user applications:', err);
+        }
+        setJobseekerStats({ availableJobs, applications, matchRate: 0 });
       } else {
         setRecentJobs((jobs?.data || []).slice(0, 5));
       }
 
       if (latestUser?.userType === 'recruiter') {
-        console.log('Loading recruiter data for ID:', latestUser._id);
-        
+        // ...existing code...
         const applications = await getJobApplications(latestUser?._id);
-        console.log('Applications response:', applications);
         setRecentApplications(Array.isArray(applications?.data) ? applications.data.slice(0, 5) : []);
-        
-        // Fetch stats with explicit logging
-        console.log('Fetching stats for recruiter:', latestUser._id);
         const statsResponse = await getRecruiterStats(latestUser._id);
-        console.log('Raw stats response:', statsResponse);
-        
         if (statsResponse?.success && statsResponse?.data) {
-          console.log('Stats data from response:', statsResponse.data);
-          
-          // Extract stats from the overview section of response data
           const overview = statsResponse.data.overview || {};
-          console.log('Stats overview:', overview);
-          
-          // Safely parse numbers with defaults
           const statsData = {
             activeJobs: parseInt(overview?.activeJobs || 0, 10),
             candidates: parseInt(overview?.totalApplications || 0, 10),
             successRate: Math.round(parseFloat(overview?.successRate || 0))
           };
-          
-          console.log('Processed stats data:', statsData);
           setRecruiterStats(statsData);
-        } else {
-          console.error('Invalid stats response structure:', statsResponse);
         }
       }
     } catch (error) {
@@ -169,9 +163,9 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.content}>
           <StatsCard
             isJobSeeker={isJobSeeker}
-            activeJobs={recruiterStats.activeJobs}
-            candidates={recruiterStats.candidates}
-            successRate={recruiterStats.successRate}
+            activeJobs={isJobSeeker ? jobseekerStats.availableJobs : recruiterStats.activeJobs}
+            candidates={isJobSeeker ? jobseekerStats.applications : recruiterStats.candidates}
+            successRate={isJobSeeker ? jobseekerStats.matchRate : recruiterStats.successRate}
           />
           <QuickActions isJobSeeker={isJobSeeker} navigation={navigation} />
           <RecentSection
@@ -196,7 +190,6 @@ const HomeScreen = ({ navigation }) => {
         </View>
       )}
     </View>
-
   );
 };
 

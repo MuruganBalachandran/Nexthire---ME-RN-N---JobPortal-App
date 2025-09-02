@@ -1,24 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import InfoRow from '../../components/jobseeker/jobs/InfoRow';
 import { JobDetailHeader, JobIntro } from '../../components/jobseeker/jobs/JobDetailHeader';
+import { getUserApplications } from '../../services/api';
+import { AuthContext } from '../../context/AuthContext';
 import { COLORS } from '../../styles/colors';
 import { FONTS } from '../../styles/fonts';
 import { formatDate } from '../../utils/formatDate';
 
+
 const JobDetailScreen = ({ route, navigation }) => {
   const { job } = route.params;
+  const { user } = useContext(AuthContext);
   const [hasApplied, setHasApplied] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [applicationId, setApplicationId] = useState(null);
+
+  useEffect(() => {
+    const checkIfApplied = async () => {
+      setLoading(true);
+      try {
+        const res = await getUserApplications();
+        // Support both { success, data } and array response
+        const applications = Array.isArray(res) ? res : res.data || [];
+        const found = applications.find(
+          (app) => app.job && (app.job._id === job._id || app.job === job._id)
+        );
+        if (found) {
+          setHasApplied(true);
+          setApplicationId(found._id);
+        } else {
+          setHasApplied(false);
+          setApplicationId(null);
+        }
+      } catch (e) {
+        setHasApplied(false);
+        setApplicationId(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (user && job && job._id) checkIfApplied();
+  }, [user, job]);
 
   const handleApply = () => {
     navigation.navigate('ApplyJob', { job });
+  };
+
+  const handleTrack = () => {
+    if (applicationId) {
+      navigation.navigate('Applications');
+    }
   };
 
   return (
@@ -37,6 +77,20 @@ const JobDetailScreen = ({ route, navigation }) => {
             <InfoRow icon="attach-money" label="Salary" value={job.salary} />
             <InfoRow icon="schedule" label="Posted" value={formatDate(job.postedDate)} />
             <InfoRow icon="work" label="Experience" value={job.experience} />
+            <InfoRow icon="category" label="Job Type" value={job.type} />
+            <InfoRow icon="home-work" label="Remote" value={job.remote ? 'Yes' : 'No'} />
+            {job.skills && (
+              <InfoRow icon="psychology" label="Skills" value={Array.isArray(job.skills) ? job.skills.join(', ') : job.skills} />
+            )}
+            {job.industry && (
+              <InfoRow icon="business-center" label="Industry" value={job.industry} />
+            )}
+            {job.level && (
+              <InfoRow icon="trending-up" label="Level" value={job.level} />
+            )}
+            {job.education && (
+              <InfoRow icon="school" label="Education" value={job.education} />
+            )}
           </View>
 
           {/* Description */}
@@ -71,18 +125,27 @@ const JobDetailScreen = ({ route, navigation }) => {
         </View>
       </ScrollView>
 
-      {/* Footer with Apply Button */}
+      {/* Footer with Apply/Track Button */}
       <View style={styles.footer}>
-        <TouchableOpacity
-          style={[styles.applyButton, hasApplied && styles.disabledButton]}
-          onPress={handleApply}
-          disabled={hasApplied}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.buttonText}>
-            {hasApplied ? 'Already Applied' : 'Apply Now'}
-          </Text>
-        </TouchableOpacity>
+        {loading ? (
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        ) : hasApplied ? (
+          <TouchableOpacity
+            style={[styles.applyButton, styles.disabledButton]}
+            onPress={handleTrack}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.buttonText}>Already Applied - Track Application</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={styles.applyButton}
+            onPress={handleApply}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.buttonText}>Apply Now</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

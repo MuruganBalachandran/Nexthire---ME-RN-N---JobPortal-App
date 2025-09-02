@@ -31,11 +31,7 @@ const HeaderSection = ({ scrollY, user, unreadCount }) => {
             </Text>
           </View>
           <View style={styles.headerIcons}>
-            {user?.userType === 'jobseeker' && (
-              <TouchableOpacity onPress={() => navigation.navigate('SavedJobs')}>
-                <Icon name="bookmark-border" size={28} color={COLORS.white} style={styles.icon} />
-              </TouchableOpacity>
-            )}
+            {/* Removed saved jobs (bookmark) icon for jobseeker */}
             {user?.userType === 'recruiter' && (
               <TouchableOpacity onPress={() => navigation.navigate('RecruiterJobs')}>
                 <Icon name="work" size={28} color={COLORS.white} style={styles.icon} />

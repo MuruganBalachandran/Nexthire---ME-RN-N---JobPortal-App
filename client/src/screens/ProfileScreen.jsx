@@ -23,7 +23,7 @@ import LogoutButton from '../components/profile/LogoutButton';
 const ProfileScreen = ({ navigation }) => {
   const { user, logout } = useContext(AuthContext);
   const [notifications, setNotifications] = useState([]);
-  const [userStats, setUserStats] = useState({ applied: 0, interviews: 0 });
+  const [jobseekerStats, setJobseekerStats] = useState({ availableJobs: 0, applications: 0, matchRate: 0 });
   const [recruiterStats, setRecruiterStats] = useState({ activeJobs: 0, candidates: 0, successRate: 0 });
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editName, setEditName] = useState(user?.fullName || '');
@@ -38,11 +38,27 @@ const ProfileScreen = ({ navigation }) => {
     const fetchData = async () => {
       try {
         if (user?._id) {
-          const { getUserProfile } = require('../services/api');
+          const { getUserProfile, getUserApplications } = require('../services/api');
           const latest = await getUserProfile(user._id);
           if (isMounted.current && latest && latest.data) {
             setLatestUser(latest.data);
             await AsyncStorage.setItem('user', JSON.stringify(latest.data));
+          }
+          if (user?.userType === 'jobseeker') {
+            // Real stats for jobseeker
+            let availableJobs = 0;
+            let applications = 0;
+            try {
+              const jobs = await require('../services/api').getJobs();
+              availableJobs = Array.isArray(jobs) ? jobs.length : 0;
+              const userApplications = await getUserApplications(user._id);
+              if (userApplications && userApplications.data) {
+                applications = Array.isArray(userApplications.data) ? userApplications.data.length : 0;
+              }
+            } catch (err) {
+              console.error('Failed to fetch jobseeker stats:', err);
+            }
+            setJobseekerStats({ availableJobs, applications, matchRate: 0 });
           }
         }
         if (user?.userType === 'recruiter') {
@@ -55,7 +71,7 @@ const ProfileScreen = ({ navigation }) => {
               successRate: Math.round(parseFloat(overview?.successRate || 0))
             });
           }
-  }
+        }
         const fetchedNotifications = await getNotifications();
         setNotifications(fetchedNotifications?.data || []);
       } catch (error) {
@@ -241,7 +257,12 @@ const ProfileScreen = ({ navigation }) => {
             successRate={recruiterStats.successRate}
           />
         ) : (
-          <StatsCard stats={userStats} unreadNotifications={unreadNotifications} />
+          <StatsCard
+            isJobSeeker={true}
+            activeJobs={jobseekerStats.availableJobs}
+            candidates={jobseekerStats.applications}
+            successRate={jobseekerStats.matchRate}
+          />
         )}
         <QuickActions onEdit={openEditModal} onShare={handleShareProfile} />
         {menuSections.map((section, index) => (

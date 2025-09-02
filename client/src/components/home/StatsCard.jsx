@@ -20,7 +20,7 @@ const StatsCard = ({ isJobSeeker, activeJobs = 0, candidates = 0, successRate = 
             />
           </View>
           <Text style={styles.statNumber}>
-            {isJobSeeker ? '15K+' : (typeof activeJobs === 'number' ? activeJobs : 0)}
+            {typeof activeJobs === 'number' ? activeJobs : 0}
           </Text>
           <Text style={styles.statLabel}>
             {isJobSeeker ? 'Available Jobs' : 'Active Jobs'}
@@ -36,7 +36,7 @@ const StatsCard = ({ isJobSeeker, activeJobs = 0, candidates = 0, successRate = 
             />
           </View>
           <Text style={styles.statNumber}>
-            {isJobSeeker ? '45' : (typeof candidates === 'number' ? candidates : 0)}
+            {typeof candidates === 'number' ? candidates : 0}
           </Text>
           <Text style={styles.statLabel}>
             {isJobSeeker ? 'Applications' : 'Candidates'}
@@ -52,7 +52,8 @@ const StatsCard = ({ isJobSeeker, activeJobs = 0, candidates = 0, successRate = 
             />
           </View>
           <Text style={styles.statNumber}>
-            {isJobSeeker ? '89%' : `${typeof successRate === 'number' ? successRate : 0}%`}</Text>
+            {typeof successRate === 'number' ? `${successRate}%` : '0%'}
+          </Text>
           <Text style={styles.statLabel}>
             {isJobSeeker ? 'Match Rate' : 'Success Rate'}
           </Text>

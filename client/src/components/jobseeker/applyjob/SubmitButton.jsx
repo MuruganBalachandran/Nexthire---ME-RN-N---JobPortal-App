@@ -3,11 +3,11 @@ import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import { COLORS } from '../../../styles/colors';
 import { FONTS } from '../../../styles/fonts';
 
-const SubmitButton = ({ loading, handleApply }) => (
+const SubmitButton = ({ loading, onPress }) => (
   <View style={styles.submitContainer}>
     <TouchableOpacity
       style={[styles.submitButton, loading && styles.disabledButton]}
-      onPress={handleApply}
+      onPress={onPress}
       disabled={loading}
     >
       <Text style={styles.buttonText}>

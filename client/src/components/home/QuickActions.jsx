@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { COLORS } from '../../styles/colors';
 import { FONTS } from '../../styles/fonts';
@@ -31,14 +31,14 @@ const QuickActions = ({ isJobSeeker, navigation }) => (
             title="Saved Jobs"
             subtitle="Your favorites"
             color={COLORS.warning}
-            onPress={() => navigation.navigate('SavedJobs')}
+            onPress={() => Alert.alert('Coming Soon', 'Saved Jobs will be available in a future update.')}
           />
           <QuickAction
             icon="notifications-active"
             title="Job Alerts"
             subtitle="Get notified"
             color={COLORS.info}
-            onPress={() => navigation.navigate('JobAlerts')}
+            onPress={() => Alert.alert('Coming Soon', 'Job Alerts will be available in a future update.')}
           />
         </>
       ) : (

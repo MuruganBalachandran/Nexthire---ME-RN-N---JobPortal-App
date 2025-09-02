@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, FlatList, RefreshControl, StyleSheet } from 'react-native';
+import { View, FlatList, RefreshControl, StyleSheet, ActivityIndicator } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserApplications } from '../../redux/slices/applicationsSlice';
 import ApplicationCard from '../../components/jobseeker/applications/ApplicationCard';
@@ -59,25 +59,30 @@ const ApplicationStatusScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <ApplicationsHeader count={applications.length} />
-
-      <FlatList
-        data={applications}
-        renderItem={({ item }) => (
-          <ApplicationCard
-            item={item}
-            navigation={navigation}
-            getStatusColor={getStatusColor}
-            getStatusIcon={getStatusIcon}
-          />
-        )}
-        keyExtractor={(item) => item.id?.toString?.() || item._id?.toString?.()}
-        ListEmptyComponent={!loading && <EmptyState navigation={navigation} />}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.listContainer}
-      />
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        </View>
+      ) : (
+        <FlatList
+          data={applications}
+          renderItem={({ item }) => (
+            <ApplicationCard
+              item={item}
+              navigation={navigation}
+              getStatusColor={getStatusColor}
+              getStatusIcon={getStatusIcon}
+            />
+          )}
+          keyExtractor={(item) => item.id?.toString?.() || item._id?.toString?.()}
+          ListEmptyComponent={<EmptyState navigation={navigation} />}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContainer}
+        />
+      )}
     </View>
   );
 };
@@ -88,8 +93,13 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   listContainer: {
-    flexGrow: 1,
-    padding: 16,
+    padding: 20,
+    paddingBottom: 40,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
