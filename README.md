@@ -3,7 +3,7 @@
 A modern, full-stack Job Portal application for job seekers and recruiters, built with React Native (mobile client) and Node.js/Express (backend API).
 
 ---
-<img width="4220" height="4124" alt="Image" src="https://github.com/user-attachments/assets/28ae7f3f-788f-4a33-9969-1d50b1c2925c" />
+<img width="6277" height="4124" alt="Image" src="https://github.com/user-attachments/assets/df408d48-4ece-4a13-afc2-70a6b6620f07" />
 
 
 ## 🚀 Features
