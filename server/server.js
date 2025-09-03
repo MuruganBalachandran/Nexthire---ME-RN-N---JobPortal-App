@@ -29,7 +29,12 @@ app.use(helmet());
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
     ? true 
-    : ['http://localhost:3000', 'http://localhost:8081', 'http://10.0.2.2:8081'],
+    : [
+        'http://localhost:3000',
+        'http://localhost:8081',
+        'http://10.0.2.2:8081',
+        'http://10.10.49.192:8081' // <-- allow mobile device access
+      ],
   credentials: true
 }));
 
@@ -114,7 +119,7 @@ const startServer = async () => {
       process.exit(1);
     }
   } else {
-    app.listen(PORT, () => {
+    app.listen(PORT,"0.0.0.0", () => {
       console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
       console.log(`Health check: http://localhost:${PORT}/health`);
     });
