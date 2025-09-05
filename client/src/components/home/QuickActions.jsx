@@ -27,11 +27,11 @@ const QuickActions = ({ isJobSeeker, navigation }) => (
             onPress={() => navigation.navigate('Applications')}
           />
           <QuickAction
-            icon="bookmark-outline"
-            title="Saved Jobs"
-            subtitle="Your favorites"
+            icon="person"
+            title="Profile"
+            subtitle="View profile"
             color={COLORS.warning}
-            onPress={() => Alert.alert('Coming Soon', 'Saved Jobs will be available in a future update.')}
+            onPress={() => navigation.navigate('Profile')}
           />
           <QuickAction
             icon="notifications-active"
@@ -58,11 +58,11 @@ const QuickActions = ({ isJobSeeker, navigation }) => (
             onPress={() => navigation.navigate('Applications')}
           />
           <QuickAction
-            icon="bar-chart"
-            title="Analytics"
-            subtitle="View insights"
+            icon="person"
+            title="Profile"
+            subtitle="View profile"
             color={COLORS.warning}
-            onPress={() => navigation.navigate('Analytics')}
+            onPress={() => navigation.navigate('Profile')}
           />
           <QuickAction
             icon="settings"

@@ -180,7 +180,7 @@ export const DATE_FORMATS = {
 
 // API base URL from .env (using react-native-dotenv for React Native)
 import { API_BASE_URL as ENV_API_BASE_URL } from '@env';
-export const API_BASE_URL = ENV_API_BASE_URL || 'http://10.0.2.2:5000/api'; // 10.0.2.2 is Android's localhost
+export const API_BASE_URL = ENV_API_BASE_URL || "http://10.0.2.2:5000/api";
 
 export const API_ENDPOINTS = {
   base: API_BASE_URL,

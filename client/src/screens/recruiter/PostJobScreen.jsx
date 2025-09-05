@@ -274,14 +274,13 @@ const PostJobScreen = ({ navigation, route }) => {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>{editMode ? 'Edit Job' : 'Post a New Job'}</Text>
+        <Text style={styles.headerSubtitle}>
+          {editMode ? 'Update your job details' : 'Find the perfect candidate'}
+        </Text>
+      </View>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>{editMode ? 'Edit Job' : 'Post a New Job'}</Text>
-          <Text style={styles.headerSubtitle}>
-            {editMode ? 'Update your job details' : 'Find the perfect candidate'}
-          </Text>
-        </View>
-
         <View style={styles.form}>
           <Text style={styles.sectionTitle}>Basic Information</Text>
 

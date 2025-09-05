@@ -62,19 +62,17 @@ const JobListScreen = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.background }}>
+      <JobListHeader
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        filterType={filterType}
+        onFilterChange={setFilterType}
+      />
       <FlatList
         data={filteredJobs}
         renderItem={renderJob}
         keyExtractor={(item) =>
           item.id?.toString?.() || item._id?.toString?.()
-        }
-        ListHeaderComponent={
-          <JobListHeader
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            filterType={filterType}
-            onFilterChange={setFilterType}
-          />
         }
         ListEmptyComponent={!loading && <EmptyState searchQuery={searchQuery} />}
         refreshControl={

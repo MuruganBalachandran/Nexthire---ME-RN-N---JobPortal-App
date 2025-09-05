@@ -313,9 +313,8 @@ const JobApplicationsScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* Always render header */}
+      {/* Always render header outside FlatList */}
       {renderHeader()}
-      
       <FlatList
         data={filteredApplications}
         renderItem={renderApplication}

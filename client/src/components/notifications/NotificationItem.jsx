@@ -29,6 +29,8 @@ const getIconColor = (type) => {
 
 const NotificationItem = ({ item, index, onPress, onMarkRead }) => {
   const scaleValue = useRef(new Animated.Value(1)).current;
+  const translateX = useRef(new Animated.Value(0)).current;
+  const [showDelete, setShowDelete] = React.useState(false);
 
   const handlePress = () => {
     Animated.sequence([
@@ -38,58 +40,89 @@ const NotificationItem = ({ item, index, onPress, onMarkRead }) => {
     onPress?.(item.id);
   };
 
-  return (
-    <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
-      <TouchableOpacity
-        style={[
-          styles.notificationItem,
-          !item.read && styles.unreadItem,
-          index === 0 && styles.firstItem,
-        ]}
-        onPress={handlePress}
-        activeOpacity={0.7}
-      >
-        <View style={[styles.iconContainer, { backgroundColor: getIconColor(item.type) + '15' }]}> 
-          <Icon name={getIcon(item.type)} size={24} color={getIconColor(item.type)} />
-        </View>
+  // Swipe left logic
+  const handleSwipe = (dx) => {
+    if (dx < -50) setShowDelete(true);
+    else setShowDelete(false);
+  };
 
-        <View style={styles.contentContainer}>
-          <View style={styles.titleRow}>
-            <Text
-              style={[styles.notificationTitle, !item.read && styles.unreadTitle]}
-              numberOfLines={1}
-            >
-              {item.title}
-            </Text>
-            {!item.read && <View style={styles.unreadDot} />}
-            {/* Tick button for marking as read */}
-            {!item.read && onMarkRead && (
-              <TouchableOpacity onPress={() => onMarkRead(item)} style={styles.tickBtn}>
-                <Icon name="check" size={20} color={COLORS.primary} />
-              </TouchableOpacity>
-            )}
+  return (
+    <Animated.View style={{ transform: [{ scale: scaleValue }, { translateX }] }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        {showDelete && (
+          <TouchableOpacity
+            style={styles.deleteBtn}
+            onPress={() => {
+              // Show confirm alert
+              if (onDelete) {
+                onDelete(item);
+              }
+            }}
+          >
+            <Icon name="delete" size={24} color="#F44336" />
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity
+          style={[
+            styles.notificationItem,
+            !item.read && styles.unreadItem,
+            index === 0 && styles.firstItem,
+          ]}
+          onPress={handlePress}
+          activeOpacity={0.7}
+          onResponderMove={(e) => handleSwipe(e.nativeEvent.pageX - e.nativeEvent.locationX)}
+          onResponderRelease={() => setShowDelete(false)}
+          onStartShouldSetResponder={() => true}
+        >
+          <View style={[styles.iconContainer, { backgroundColor: getIconColor(item.type) + '15' }]}> 
+            <Icon name={getIcon(item.type)} size={24} color={getIconColor(item.type)} />
           </View>
 
-          <Text style={styles.notificationMessage} numberOfLines={2}>
-            {item.message}
-          </Text>
-
-          <View style={styles.metaRow}>
-            <Text style={styles.timestamp}>{formatDate(item.timestamp, 'relative')}</Text>
-            <View style={[styles.typeBadge, { backgroundColor: getIconColor(item.type) + '20' }]}>
-              <Text style={[styles.typeBadgeText, { color: getIconColor(item.type) }]}>
-                {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
+          <View style={styles.contentContainer}>
+            <View style={styles.titleRow}>
+              <Text
+                style={[styles.notificationTitle, !item.read && styles.unreadTitle]}
+                numberOfLines={1}
+              >
+                {item.title}
               </Text>
+              {!item.read && <View style={styles.unreadDot} />}
+              {/* Tick button for marking as read */}
+              {!item.read && onMarkRead && (
+                <TouchableOpacity onPress={() => onMarkRead(item)} style={styles.tickBtn}>
+                  <Icon name="check" size={20} color={COLORS.primary} />
+                </TouchableOpacity>
+              )}
+            </View>
+
+            <Text style={styles.notificationMessage} numberOfLines={2}>
+              {item.message}
+            </Text>
+
+            <View style={styles.metaRow}>
+              <Text style={styles.timestamp}>{formatDate(item.timestamp, 'relative')}</Text>
+              <View style={[styles.typeBadge, { backgroundColor: getIconColor(item.type) + '20' }]}>
+                <Text style={[styles.typeBadgeText, { color: getIconColor(item.type) }]}>
+                  {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </View>
     </Animated.View>
   );
 
 };
 
 const styles = StyleSheet.create({
+  deleteBtn: {
+    marginRight: 8,
+    backgroundColor: '#fff0f0',
+    borderRadius: 16,
+    padding: 8,
+    elevation: 2,
+  },
   notificationItem: {
     flexDirection: 'row',
     backgroundColor: COLORS.white,

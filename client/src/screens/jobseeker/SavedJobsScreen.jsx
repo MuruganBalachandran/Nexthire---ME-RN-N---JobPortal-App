@@ -69,16 +69,7 @@ const SavedJobsScreen = ({ navigation }) => {
     />
   );
 
-  const renderHeader = () => (
-    <JobListHeader
-      title="Saved Jobs"
-      subtitle="Track and manage your saved positions"
-      filterType={filterType}
-      onFilterChange={setFilterType}
-      totalJobs={savedJobs.length}
-      showBackButton={true}
-      onBackPress={() => navigation.goBack()}/>
-  );
+  const renderHeader = () => null;
 
   const renderEmpty = () => (
     <EmptyState
@@ -90,12 +81,20 @@ const SavedJobsScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <JobListHeader
+        title="Saved Jobs"
+        subtitle="Track and manage your saved positions"
+        filterType={filterType}
+        onFilterChange={setFilterType}
+        totalJobs={savedJobs.length}
+        showBackButton={true}
+        onBackPress={() => navigation.goBack()}
+      />
       <FlatList
         data={getFilteredJobs()}
         renderItem={renderJob}
         keyExtractor={item => item._id}
         contentContainerStyle={styles.listContent}
-        ListHeaderComponent={renderHeader}
         ListEmptyComponent={!loading && renderEmpty}
         refreshControl={
           <RefreshControl

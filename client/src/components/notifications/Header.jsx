@@ -29,12 +29,7 @@ const Header = ({ unreadCount, onClear, hasNotifications, onBack }) => (
             )}
           </View>
         </View>
-        {hasNotifications && (
-          <TouchableOpacity style={styles.clearButton} onPress={onClear}>
-            <Icon name="clear-all" size={20} color={COLORS.white} />
-            <Text style={styles.clearText}>Clear</Text>
-          </TouchableOpacity>
-        )}
+  {/* Clear button removed as per requirements */}
       </View>
 
     </View>
